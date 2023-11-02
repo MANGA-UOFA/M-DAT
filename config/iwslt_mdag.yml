@@ -1,0 +1,126 @@
+# Path
+data_bin: data-bin/iwslt
+# save_dir: checkpoints_tmp
+tensorboard_logdir: false
+
+# log_file: iwslt_liwei.out
+
+
+# multilingual config
+langs: en,ro,it,nl
+lang_pairs: en-ro,ro-en,en-it,it-en,en-nl,nl-en
+sampling_method: temperature
+sampling_temperature: 1
+encoder_langtok: "src"
+decoder_langtok: true
+keep_decoder_language_emb: true
+
+replace_src_langtok_with_tgt: true
+encoder_consistency_loss: true
+
+# model arch set up
+arch: multilingual_dag_zeroshot
+task: translation_multilingual_nat_bt
+ddp_backend: c10d # legacy_ddp # c10d
+criterion: multilingual_nat_dag_zeroshot
+noise: full_mask
+
+encoder_attention_heads: 8
+decoder_attention_heads: 8
+
+encoder_layers: 5
+decoder_layers: 5
+
+encoder_normalize_before: true
+decoder_normalize_before: true
+
+# optimization
+optimizer: adam
+adam_betas: '"(0.9, 0.98)"'
+label_smoothing: 0.0
+
+attention_dropout: 0.2
+dropout: 0.2
+relu_dropout: 0.2
+weight_decay: 0.0001
+
+# model hyperparameter
+activation_fn: gelu
+share_all_embeddings: true
+
+decoder_learned_pos: true
+encoder_learned_pos: true
+apply_bert_init: true
+
+
+# Train config
+seed: 0
+
+log_format: simple
+log_interval: 200
+
+max_tokens: 4096
+update_freq: 1
+max_update: 100000
+
+fp16: true
+clip_norm: 0.1
+lr: 0.0005
+warmup_init_lr: '1e-07'
+stop_min_lr: '1e-09'
+lr_scheduler: inverse_sqrt
+warmup_updates: 10000
+
+grouped_shuffling: true
+
+left_pad_source: False
+left_pad_target: False
+
+# valid config
+fixed_validation_seed: 7
+
+max_tokens_valid: 4096
+valid_subset: valid
+
+validate_interval: 500
+save_interval: 500
+validate_interval_updates: 500
+save_interval_updates: 500
+keep_interval_updates: 5
+keep_last_epochs: 5
+keep_best_checkpoints: 5
+
+skip_invalid_size_inputs_valid_test: true
+
+eval_bleu: true
+eval_bleu_print_samples: true
+eval_bleu_remove_bpe: true
+eval_bleu_detok: moses
+eval_tokenized_bleu: true
+best_checkpoint_metric: bleu
+maximize_best_checkpoint_metric: true
+
+
+
+# mdag config
+
+links_feature: 'feature:position'
+decode_strategy: 'lookahead'
+max_source_positions: 256
+max_target_positions: 2048
+src_upsample_scale: 8.0
+glat_p: '0.5:0.2@100k'
+glance_strategy: 'number-random'
+max_transition_length: 99999
+min_sent_length: 5
+length_loss_factor: 0
+
+eval_bleu_args: "'{\"iter_decode_max_iter\": 0, \"iter_decode_with_beam\": 1}'"
+
+
+# others
+user_dir: fs_plugins
+
+
+
+
